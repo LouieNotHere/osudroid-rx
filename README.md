@@ -12,6 +12,8 @@
 
 A custom osu!droid build specifically built for relax players out there.
 
+**!! THIS IS A FORK OF THE ORIGINAL ONE BECAUSE THE ACCOUNT REMAINED INACTIVE AS THE DEVICE WAS STOLEN SINCE APRIL 1, 2024 !!**
+
 ## All about osu!droid
 osu!droid is a free-to-play circle clicking rhythm game for Android devices, which was inspired by osu!. It was a game that was hatched many years ago by the [osu!](https://osu.ppy.sh/home) community. This project is now being developed by a small group of fans and also with the help of foreign friends.
 
@@ -54,9 +56,10 @@ We had this release table for every version of the custom build
 | v1.7 | Skipped |
 | v1.8 | 1.7.1 |
 | v1.9 | 1.7.1 |
-| v1.10 | ???? |
+| v1.10 | 1.7.2 |
 
 ## Ranking
+**!! THIS FEATURE IS DISCONTINUED !!**
 In future builds, this will be the next ranking system, so stay tuned
 
 | Rank | Accuracy |
