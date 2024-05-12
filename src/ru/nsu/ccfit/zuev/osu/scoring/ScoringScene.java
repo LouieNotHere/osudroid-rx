@@ -485,7 +485,7 @@ public class ScoringScene {
                 PerformanceAttributes maxPerformanceAttributes = BeatmapDifficultyCalculator.calculatePerformance(
                         difficultyAttributes
                 );
-                ppinfo.append(String.format(Locale.ENGLISH, "%.2f★ | %.2f/%.2fpp", difficultyAttributes.starRating, performanceAttributes.total, maxPerformanceAttributes.total));
+                ppinfo.append(String.format(Locale.ENGLISH, "%.2f★ | %.2f/%.2fDRP", difficultyAttributes.starRating, performanceAttributes.total, maxPerformanceAttributes.total));
             }
             if (stat.getUnstableRate() > 0) {
                 if (beatmapData != null) {
