@@ -286,7 +286,7 @@ public class PerformanceCalculator {
 
         // Since that flashlight is only for players who can memorize various beatmaps, we buff the value by 5%
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            flashlightValue *= 1.05 + (((difficultyAttributes.approachRate + diffifultyAttributes.overallDifficulty) * 0.015) / 3.14159);
+            flashlightValue *= 1.05 + ((difficultyAttributes.approachRate * 0.0075) / 3.14159);
         }
 
         flashlightValue *= getComboScalingFactor();
