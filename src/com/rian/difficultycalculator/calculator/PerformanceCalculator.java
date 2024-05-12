@@ -74,9 +74,9 @@ public class PerformanceCalculator {
             multiplier *= 1.15;
         }
 
-        // Debuff the pp multiplier by 2.5% with the relax mod
+        // Debuff the pp multiplier by 50% with the relax mod (Updated May 12, 2023)
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            multiplier *= 0.975;
+            multiplier *= 0.5;
         }
 
         PerformanceAttributes attributes = new PerformanceAttributes();
@@ -162,11 +162,9 @@ public class PerformanceCalculator {
             aimValue *= 1 + 0.04 * (12 - difficultyAttributes.approachRate);
         }
 
-        // We buff the aim pp value by 22% and by adding the approach rate value multiplied by 0.0025
-        // For example, if the approach rate is 10.33 with double time, 10.33 * 0.0025 = 0.0387375
-        // And then we add it to the aim pp value multiplier, and that would be equal to 1.2587375
+        // no more comments, pure stress to peeps
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            aimValue *= 1.225 + (difficultyAttributes.approachRate * 0.00375);
+            aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004);
         } 
 
         // We assume 15% of sliders in a map are difficult since there's no way to tell from the performance calculator.
@@ -216,6 +214,11 @@ public class PerformanceCalculator {
             speedValue *= 1 + 0.04 * (12 - difficultyAttributes.approachRate);
         }
 
+        // No reason why i debuff this by 99%
+        if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
+            speedValue *= 0.01;
+        }
+
         // Calculate accuracy assuming the worst case scenario.
         double relevantTotalDiff = getTotalHits() - difficultyAttributes.speedNoteCount;
         double relevantCountGreat = Math.max(0, countGreat - relevantTotalDiff);
@@ -256,14 +259,14 @@ public class PerformanceCalculator {
             accuracyValue *= 1.02;
         }
 
-        // Since most relax players wanted to include the accuracy value, we debuff the accuracy pp value by 31%
+        // Since most relax players wanted to include the accuracy value, we debuff the accuracy pp value by 50%
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            accuracyValue *= 0.695 + (difficultyAttributes.approachRate * 0.005);
+            accuracyValue *= 0.5 + (difficultyAttributes.approachRate * 0.0025);
         } 
 
         // Multiply the accuracy pp by 75% with the precise mod
         if (difficultyAttributes.mods.contains(GameMod.MOD_PRECISE)) {
-            accuracyValue *= 1.75;
+            accuracyValue *= 1.75 + (difficultyAttributes.overallDifficulty * 0.005);
         }
 
         return accuracyValue;
@@ -283,7 +286,7 @@ public class PerformanceCalculator {
 
         // Since that flashlight is only for players who can memorize various beatmaps, we buff the value by 5%
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            flashlightValue *= 1.05;
+            flashlightValue *= 1.05 + (((difficultyAttributes.approachRate + diffifultyAttributes.overallDifficulty) * 0.015) / 3.14159);
         }
 
         flashlightValue *= getComboScalingFactor();
