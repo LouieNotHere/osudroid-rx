@@ -1,4 +1,4 @@
-# osudroid!relax
+# osudroid!relax (REDONE..?)
 
 ![logo](https://media.discordapp.net/attachments/792900587887919114/1127174982754107483/Untitled164_20230708175009.png)
 [![Official Discord Server](https://discordapp.com/api/guilds/1095653998389907468/widget.png?style=shield)](https://discord.gg/kUaSggQP7m)
