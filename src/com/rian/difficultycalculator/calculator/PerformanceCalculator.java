@@ -161,10 +161,13 @@ public class PerformanceCalculator {
         if (difficultyAttributes.mods.contains(GameMod.MOD_HIDDEN)) {
             aimValue *= 1 + 0.04 * (12 - difficultyAttributes.approachRate);
         }
-
+        
         // no more comments, pure stress to peeps
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
             aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004);
+            if (difficultyAttributes.mods.contains(GameMod.MOD_HARDROCK)) {
+                aimValue *= 1.05 * (difficultyAttributes.overallDifficulty / 105);
+            }
         } 
 
         // We assume 15% of sliders in a map are difficult since there's no way to tell from the performance calculator.
@@ -214,9 +217,13 @@ public class PerformanceCalculator {
             speedValue *= 1 + 0.04 * (12 - difficultyAttributes.approachRate);
         }
 
-        // No reason why i debuff this by 99%
+        // No reason why i debuff this by 99.25%
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            speedValue *= 0.01;
+            speedValue *= 0.0075;
+            // Buff the speed pp by 2% with dt
+            if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
+            speedValue *= 1.02;
+            }
         }
 
         // Calculate accuracy assuming the worst case scenario.
@@ -262,12 +269,11 @@ public class PerformanceCalculator {
         // Since most relax players wanted to include the accuracy value, we debuff the accuracy pp value by 50%
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
             accuracyValue *= 0.5 + (difficultyAttributes.approachRate * 0.0025);
+            // Multiply the accuracy pp by 75% with pr
+            if (difficultyAttributes.mods.contains(GameMod.MOD_PRECISE)) {
+                accuracyValue *= 1.75 + (difficultyAttributes.overallDifficulty * 0.005);
+            }
         } 
-
-        // Multiply the accuracy pp by 75% with the precise mod
-        if (difficultyAttributes.mods.contains(GameMod.MOD_PRECISE)) {
-            accuracyValue *= 1.75 + (difficultyAttributes.overallDifficulty * 0.005);
-        }
 
         return accuracyValue;
     }
@@ -286,7 +292,9 @@ public class PerformanceCalculator {
 
         // Since that flashlight is only for players who can memorize various beatmaps, we buff the value by 5%
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            flashlightValue *= 1.05 + ((difficultyAttributes.approachRate * 0.0075) / 3.14159);
+            if (difficultyAttributes.mods.contains(GameMod.MOD_FLASHLIGHT)) {
+                flashlightValue *= 1.05 + ((difficultyAttributes.approachRate * 0.0075) / 3.1415926535);
+            }
         }
 
         flashlightValue *= getComboScalingFactor();
