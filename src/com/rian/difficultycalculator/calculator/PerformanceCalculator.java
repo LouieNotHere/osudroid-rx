@@ -74,9 +74,9 @@ public class PerformanceCalculator {
             multiplier *= 1.15;
         }
 
-        // Debuff the pp multiplier by 50% with the relax mod (Updated May 12, 2023)
+        // Debuff the pp multiplier by 42.5% with the relax mod (Updated May 12, 2023)
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            multiplier *= 0.5;
+            multiplier *= 0.575;
         }
 
         PerformanceAttributes attributes = new PerformanceAttributes();
@@ -164,7 +164,7 @@ public class PerformanceCalculator {
         
         // no more comments, pure stress to peeps
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004);
+            aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004) + (lengthBonus / 31415.926535);
             if (difficultyAttributes.mods.contains(GameMod.MOD_HARDROCK)) {
                 aimValue *= 1.05 * (difficultyAttributes.overallDifficulty / 105);
             }
