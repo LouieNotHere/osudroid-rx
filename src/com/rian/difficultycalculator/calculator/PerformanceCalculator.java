@@ -164,7 +164,7 @@ public class PerformanceCalculator {
         
         // no more comments, pure stress to peeps
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004) + (lengthBonus / 31415.926535);
+            aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004);
             if (difficultyAttributes.mods.contains(GameMod.MOD_HARDROCK)) {
                 aimValue *= 1.05 * (difficultyAttributes.overallDifficulty / 105);
             }
