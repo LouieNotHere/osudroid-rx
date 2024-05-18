@@ -88,6 +88,9 @@ The build is open source! Which means you can clone it and make it on the go.
 
 Any contributions are free, and the **Android CI** workflow will start to build the `.apk` once a commit has been done, you should wait for a couple of minutes and the build will be done assembling with the commit you currently included, so don't worry.
 
+## Asset Credits
+osu! Logo - [Dean "ppy / peppy" Herbert](https://github.com/ppy/osu)
+
 ## License
 
 osudroid!relax is licensed under the [Apache License 2.0](https://opensource.org/licenses/Apache-2.0) license, you can check it and see the license.
