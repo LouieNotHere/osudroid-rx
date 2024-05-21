@@ -165,8 +165,13 @@ public class PerformanceCalculator {
         // no more comments, pure stress to peeps
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
             aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004);
+            // fix hard rock reducing the drp values with rx
             if (difficultyAttributes.mods.contains(GameMod.MOD_HARDROCK)) {
-                aimValue *= 1.05 * (difficultyAttributes.overallDifficulty / 105);
+                aimValue *= 1.05 + (difficultyAttributes.overallDifficulty / 105);
+            }
+            // buff the aim pp by 10% with dt
+            if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
+                aimValue *= 1.1;
             }
         } 
 
@@ -273,6 +278,10 @@ public class PerformanceCalculator {
             if (difficultyAttributes.mods.contains(GameMod.MOD_PRECISE)) {
                 accuracyValue *= 1.75 + (difficultyAttributes.overallDifficulty * 0.005);
             }
+            // multiply the accuracy pp by 5% with the flashlight mod since it restricts the active area
+            if (difficultyAttributes.mods.contains(GameMod.MOD_FLASHLIGHT)) {
+                accuracyValue *= 1.05;
+            }
         } 
 
         return accuracyValue;
@@ -290,7 +299,7 @@ public class PerformanceCalculator {
             flashlightValue *= 0.97 * Math.pow(1 - Math.pow(effectiveMissCount / getTotalHits(), 0.775), Math.pow(effectiveMissCount, 0.875));
         }
 
-        // Since that flashlight is only for players who can memorize various beatmaps, we buff the value by 5%
+        // Since that flashlight is only for players who can memorize various beatmaps, we buff the value by 5% with rx (fixing comment mistakes)
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
             flashlightValue *= 1.25 + ((difficultyAttributes.approachRate * 0.0075) / (3.1415926535 * 0.85));
         }
