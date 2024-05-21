@@ -173,6 +173,10 @@ public class PerformanceCalculator {
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
                 aimValue *= 1.1;
             }
+            // do this with nightcore to avoid confusion
+            if (difficultyAttributes.mods.contains(GameMod.MOD_NIGHTCORE)) {
+                aimValue *= 1.1;
+            }
         } 
 
         // We assume 15% of sliders in a map are difficult since there's no way to tell from the performance calculator.
@@ -228,6 +232,10 @@ public class PerformanceCalculator {
             // Buff the speed pp by 2% with dt
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
             speedValue *= 1.02;
+            }
+            // do this either with nightcore to avoid confusion
+            if (difficultyAttributes.mods.contains(GameMod.MOD_NIGHTCORE)) {
+                aimValue *= 1.1;
             }
         }
 
@@ -301,7 +309,7 @@ public class PerformanceCalculator {
 
         // Since that flashlight is only for players who can memorize various beatmaps, we buff the value by 5% with rx (fixing comment mistakes)
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            flashlightValue *= 1.25 + ((difficultyAttributes.approachRate * 0.0075) / (3.1415926535 * 0.85));
+            flashlightValue *= 1.275 + ((difficultyAttributes.approachRate * 0.008) / (3.1415926535 * 0.775));
         }
 
         flashlightValue *= getComboScalingFactor();
