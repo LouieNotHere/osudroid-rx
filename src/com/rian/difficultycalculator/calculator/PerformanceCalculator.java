@@ -173,7 +173,7 @@ public class PerformanceCalculator {
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
                 aimValue *= 1.1;
             }
-            // do this with nightcore to avoid confusion
+            // do this either with nightcore to avoid confusion
             if (difficultyAttributes.mods.contains(GameMod.MOD_NIGHTCORE)) {
                 aimValue *= 1.1;
             }
@@ -231,11 +231,11 @@ public class PerformanceCalculator {
             speedValue *= 0.0075;
             // Buff the speed pp by 2% with dt
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
-            speedValue *= 1.02;
+                speedValue *= 1.02;
             }
             // do this either with nightcore to avoid confusion
             if (difficultyAttributes.mods.contains(GameMod.MOD_NIGHTCORE)) {
-                aimValue *= 1.1;
+                speedValue *= 1.02;
             }
         }
 
@@ -349,4 +349,4 @@ public class PerformanceCalculator {
     private double getComboScalingFactor() {
         return difficultyAttributes.maxCombo <= 0 ? 0 : Math.min(Math.pow(scoreMaxCombo, 0.8) / Math.pow(difficultyAttributes.maxCombo, 0.8), 1);
     }
-            }
+}
