@@ -169,7 +169,7 @@ public class PerformanceCalculator {
             if (difficultyAttributes.mods.contains(GameMod.MOD_HARDROCK)) {
                 aimValue *= 1.05 + (difficultyAttributes.overallDifficulty / 105);
             }
-            // Buff the speed pp by 2% with dt
+            // buff the aim pp by 10% with dt
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
                 aimValue *= 1.1;
             }
