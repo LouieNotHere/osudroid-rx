@@ -44,8 +44,8 @@ Older builds based on older versions of the game are completely outdated, so ple
 ## Release Table
 We had this release table for every version of the custom build
 
-| Version    | Base Version |
-|------------|------------|
+| Version | Base Version |
+|---------|--------------|
 | v1.0 | 1.6.8 |
 | v1.1 | 1.6.8 |
 | v1.2 | 1.6.8 |
@@ -57,6 +57,9 @@ We had this release table for every version of the custom build
 | v1.8 | 1.7.1 |
 | v1.9 | 1.7.1 |
 | v1.10 | 1.7.2 |
+| v1.11 | 1.7.2 |
+| v1.11.1 | 1.7.2 |
+| v1.11.2 | 1.7.2 |
 
 ## Ranking
 **!! THIS FEATURE IS DISCONTINUED !!**
