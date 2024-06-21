@@ -27,8 +27,8 @@ public class MainFlashLightSprite extends FlashlightAreaSizedSprite {
     }
 
     public void handleAreaShrinking(int combo) {
-        // Area stops shrinking at 200 combo
-        if (combo <= 200 && combo % 100 == 0) {
+        // Area stops shrinking at 500 combo (for unfair purposes)
+        if (combo <= 500 && combo % 100 == 0) {
             // For every 100 combo, the size is decreased by 10%
             final float newSize = (1 - 0.1f * combo / 100f) * BASE_SIZE;
             this.changeArea(currentSize, newSize);
