@@ -76,7 +76,12 @@ public class PerformanceCalculator {
 
         // Debuff the drp multiplier by 42.5% with the relax mod (Updated June 29, 2024)
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            multiplier *= 0.575;
+            // If it contains hard rock, reduce the debuff by 10% from overall debuff
+            if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
+                multiplier *= 0.675;
+            } else {
+                multiplier *= 0.575;
+            }
         }
 
         PerformanceAttributes attributes = new PerformanceAttributes();
@@ -88,10 +93,10 @@ public class PerformanceCalculator {
         attributes.flashlight = calculateFlashlightValue();
 
         attributes.total = Math.pow(
-                Math.pow(attributes.aim, 1.1) +
-                        Math.pow(attributes.speed, 1.1) +
-                        Math.pow(attributes.accuracy, 1.1) +
-                        Math.pow(attributes.flashlight, 1.1),
+                Math.pow(attributes.aim, 1.11) +
+                        Math.pow(attributes.speed, 1.11) +
+                        Math.pow(attributes.accuracy, 1.11) +
+                        Math.pow(attributes.flashlight, 1.11),
                 1 / 1.1
         ) * multiplier;
 
@@ -165,9 +170,9 @@ public class PerformanceCalculator {
         // no more comments, pure stress to peeps
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
             aimValue *= 1.325 + (difficultyAttributes.approachRate * 0.004);
-            // fix hard rock reducing the drp values with rx
+            // fix hard rock reducing the drp values with rx (again)
             if (difficultyAttributes.mods.contains(GameMod.MOD_HARDROCK)) {
-                aimValue *= 1.05 + (difficultyAttributes.overallDifficulty / 105);
+                aimValue *= 1.05 + (difficultyAttributes.overallDifficulty * 0.025);
             }
             // buff the aim drp by 10% with dt
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
@@ -235,11 +240,11 @@ public class PerformanceCalculator {
             speedValue *= 0.0075;
             // Buff the speed pp by 2% with dt
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
-                speedValue *= 1.02;
+                speedValue *= 1.03;
             }
             // do this either with nightcore to avoid confusion
             if (difficultyAttributes.mods.contains(GameMod.MOD_NIGHTCORE)) {
-                speedValue *= 1.02;
+                speedValue *= 1.03;
             }
         }
 
