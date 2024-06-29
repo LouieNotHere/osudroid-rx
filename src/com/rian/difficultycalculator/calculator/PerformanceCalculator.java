@@ -59,22 +59,22 @@ public class PerformanceCalculator {
     private PerformanceAttributes createPerformanceAttributes() {
         double multiplier = finalMultiplier;
 
-        // Debuff the pp multiplier with the no fail mod by 15%
+        // Debuff the drp multiplier with the no fail mod by 15%
         if (difficultyAttributes.mods.contains(GameMod.MOD_NOFAIL)) {
             multiplier *= 0.85;
         }
 
-        // Debuff pp multiplier with the really easy mod by 25%
+        // Debuff drp multiplier with the really easy mod by 25%
         if (difficultyAttributes.mods.contains(GameMod.MOD_REALLYEASY)) {
             multiplier *= 0.75;
         }
 
-        // Buff the pp multiplier by 15% with the precise mod
+        // Buff the drp multiplier by 15% with the precise mod
         if (difficultyAttributes.mods.contains(GameMod.MOD_PRECISE)) {
             multiplier *= 1.15;
         }
 
-        // Debuff the pp multiplier by 42.5% with the relax mod (Updated May 12, 2023)
+        // Debuff the drp multiplier by 42.5% with the relax mod (Updated June 29, 2024)
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
             multiplier *= 0.575;
         }
@@ -88,9 +88,9 @@ public class PerformanceCalculator {
         attributes.flashlight = calculateFlashlightValue();
 
         attributes.total = Math.pow(
-                Math.pow(attributes.aim, 1.15) +
-                        Math.pow(attributes.speed, 1.15) +
-                        Math.pow(attributes.accuracy, 1) +
+                Math.pow(attributes.aim, 1.1) +
+                        Math.pow(attributes.speed, 1.1) +
+                        Math.pow(attributes.accuracy, 1.1) +
                         Math.pow(attributes.flashlight, 1.1),
                 1 / 1.1
         ) * multiplier;
@@ -169,13 +169,17 @@ public class PerformanceCalculator {
             if (difficultyAttributes.mods.contains(GameMod.MOD_HARDROCK)) {
                 aimValue *= 1.05 + (difficultyAttributes.overallDifficulty / 105);
             }
-            // buff the aim pp by 10% with dt
+            // buff the aim drp by 10% with dt
             if (difficultyAttributes.mods.contains(GameMod.MOD_DOUBLETIME)) {
                 aimValue *= 1.1;
             }
             // do this either with nightcore to avoid confusion
             if (difficultyAttributes.mods.contains(GameMod.MOD_NIGHTCORE)) {
                 aimValue *= 1.1;
+            }
+            // fixing the precise mod not containing anything, so i'll give it a buff to drp
+            if (difficultyAttributes.mods.contains(GameMod.MOD_PRECISE)) {
+                aimValue *= 1.05;
             }
         } 
 
@@ -279,14 +283,14 @@ public class PerformanceCalculator {
             accuracyValue *= 1.02;
         }
 
-        // Since most relax players wanted to include the accuracy value, we debuff the accuracy pp value by 50%
+        // Since most relax players wanted to include the accuracy value, we debuff the accuracy drp value by 50%
         if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
             accuracyValue *= 0.5 + (difficultyAttributes.approachRate * 0.0025);
-            // Multiply the accuracy pp by 75% with pr
+            // Multiply the accuracy drp twice with pr
             if (difficultyAttributes.mods.contains(GameMod.MOD_PRECISE)) {
-                accuracyValue *= 1.75 + (difficultyAttributes.overallDifficulty * 0.005);
+                accuracyValue *= 2;
             }
-            // multiply the accuracy pp by 5% with the flashlight mod since it restricts the active area
+            // multiply the accuracy drp by 5% with the flashlight mod since it restricts the active area
             if (difficultyAttributes.mods.contains(GameMod.MOD_FLASHLIGHT)) {
                 accuracyValue *= 1.05;
             }
