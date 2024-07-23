@@ -1,6 +1,6 @@
 # osudroid!relax (REDONE..?)
 
-![logo](Untitled40_20240518134401.png)
+![logo](icon.png)
 [![Official Discord Server](https://discordapp.com/api/guilds/1095653998389907468/widget.png?style=shield)]((https://discord.com/invite/hXTFFQHC2Q))
 [![Android CI](https://github.com/PayToUse/osudroid-rx/workflows/Android%20CI/badge.svg?branch=master)](https://github.com/PayToUse/osudroid-rx/actions?query=workflow%3A"Android+CI")
 ![GitHub repo size](https://img.shields.io/github/repo-size/PayToUse/osudroid-rx?style=flat-square&label=Repository%20Size)
