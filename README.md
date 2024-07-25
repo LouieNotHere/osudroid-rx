@@ -15,7 +15,7 @@ A custom osu!droid build specifically built for relax players out there.
 **!! THIS REPOSITORY IS RECENTLY FORKED FROM THE OFFICIAL OSU!DROID REPOSITORY, THE CODE FROM v1.11.3 IS ARCHIVED (WILL PROVIDE LINK SOON) !!**
 
 ## All about osu!droid
-osu!droid is a free-to-play circle clicking rhythm game for Android devices, which was inspired by osu!. It was a game that was hatched many years ago by the [osu!](https://osu.ppy.sh/home) community. This project is now being developed by a small group of fans and also with the help of foreign friends.
+osu!droid is a free-to-play circle clicking rhythm game for Android devices, which was inspired by osu!. It was a game that was hatched many years ago by the [osu!](https://osu.ppy.sh/home) community. This project is now being developed by a small group of fans, alongside the help of foreign friends.
 
 Over time, the game is currently in development, as they add some parities and features to it.
 
