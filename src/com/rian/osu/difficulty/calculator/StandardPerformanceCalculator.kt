@@ -31,26 +31,6 @@ class StandardPerformanceCalculator(
             if (mods.any { m -> m is ModNoFail }) {
                 multiplier *= max(0.9, 1 - 0.02 * effectiveMissCount)
             }
-
-            if (mods.any { m -> m is ModRelax }) {
-                // Graph: https://www.desmos.com/calculator/bc9eybdthb
-                // We use OD13.3 as maximum since it's the value at which great hit window becomes 0.
-                val okMultiplier = max(
-                    0.0,
-                    if (overallDifficulty > 0) 1 - (overallDifficulty / 13.33).pow(1.8)
-                    else 1.0
-                )
-                val mehMultiplier = max(
-                    0.0,
-                    if (overallDifficulty > 0) 1 - (overallDifficulty / 13.33).pow(5.0)
-                    else 1.0
-                )
-
-                // As we're adding 100s and 50s to an approximated number of combo breaks, the result can be higher
-                // than total hits in specific scenarios (which breaks some calculations),  so we need to clamp it.
-                effectiveMissCount =
-                    min(effectiveMissCount + countOk * okMultiplier + countMeh * mehMultiplier, totalHits.toDouble())
-            }
         }
 
         it.effectiveMissCount = effectiveMissCount
@@ -83,19 +63,6 @@ class StandardPerformanceCalculator(
         aimValue *= comboScalingFactor
 
         difficultyAttributes.apply {
-            if (mods.none { it is ModRelax }) {
-                // AR scaling
-                var approachRateFactor = 0.0
-                if (approachRate > 10.33) {
-                    approachRateFactor += 0.3 * (approachRate - 10.33)
-                } else if (approachRate < 8) {
-                    approachRateFactor += 0.05 * (8 - approachRate)
-                }
-
-                // Buff for longer maps with high AR.
-                aimValue *= 1 + approachRateFactor * lengthBonus
-            }
-
             // We want to give more reward for lower AR when it comes to aim and HD. This nerfs high AR and buffs lower AR.
             if (mods.any { it is ModHidden }) {
                 aimValue *= 1 + 0.04 * (12 - approachRate)
@@ -127,9 +94,6 @@ class StandardPerformanceCalculator(
     }
 
     private fun calculateSpeedValue(): Double {
-        if (difficultyAttributes.mods.any { it is ModRelax }) {
-            return 0.0
-        }
 
         var speedValue = (5 * max(1.0, difficultyAttributes.speedDifficulty / 0.0675) - 4).pow(3.0) / 100000
 
@@ -179,9 +143,6 @@ class StandardPerformanceCalculator(
     }
 
     private fun calculateAccuracyValue(): Double {
-        if (difficultyAttributes.mods.any { it is ModRelax }) {
-            return 0.0
-        }
 
         // This percentage only considers HitCircles of any value - in this part of the calculation we focus on hitting the timing hit window.
         val circleCount = difficultyAttributes.hitCircleCount
