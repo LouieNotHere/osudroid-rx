@@ -182,7 +182,7 @@ public class MainScene implements IUpdateHandler {
                 .getInstance().getFont("font"),
                 String.format(
                         Locale.getDefault(),
-                        "osu!droid %s\nby osu!droid Team\nosu! is © peppy 2007-2024",
+                        "osudroid!relax v1.12b (Based on osu!droid 1.7.2)\nby PayToUse (LouieNotHere) and the osu!droid Team\nosu! is \u00a9 peppy 2007-2024",
                         BuildConfig.VERSION_NAME + " (" + BuildConfig.BUILD_TYPE + ")"
                 )) {
 
