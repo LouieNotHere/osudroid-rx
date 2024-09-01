@@ -23,7 +23,7 @@ jobs:
     - name: Assemble the Debug .apk
       run: ./gradlew assembleDebug
     - name: Create and Release the Debug artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: osudroid-rx
         path: build/outputs/apk/debug/app-debug.apk
