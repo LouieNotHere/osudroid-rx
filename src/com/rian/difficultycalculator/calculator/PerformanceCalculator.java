@@ -63,17 +63,6 @@ public class PerformanceCalculator {
             multiplier *= Math.max(0.9, 1 - 0.02 * effectiveMissCount);
         }
 
-        if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            // Graph: https://www.desmos.com/calculator/bc9eybdthb
-            // We use OD13.3 as maximum since it's the value at which great hit window becomes 0.
-            double okMultiplier = Math.max(0, difficultyAttributes.overallDifficulty > 0 ? 1 - Math.pow(difficultyAttributes.overallDifficulty / 13.33, 1.8) : 1);
-            double mehMultiplier = Math.max(0, difficultyAttributes.overallDifficulty > 0 ? 1 - Math.pow(difficultyAttributes.overallDifficulty / 13.33, 5) : 1);
-
-            // As we're adding 100s and 50s to an approximated number of combo breaks, the result can be higher
-            // than total hits in specific scenarios (which breaks some calculations),  so we need to clamp it.
-            effectiveMissCount = Math.min(effectiveMissCount + countOk * okMultiplier + countMeh * mehMultiplier, getTotalHits());
-        }
-
         PerformanceAttributes attributes = new PerformanceAttributes();
 
         attributes.effectiveMissCount = effectiveMissCount;
@@ -151,19 +140,6 @@ public class PerformanceCalculator {
 
         aimValue *= getComboScalingFactor();
 
-        if (!difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            // AR scaling
-            double approachRateFactor = 0;
-            if (difficultyAttributes.approachRate > 10.33) {
-                approachRateFactor += 0.3 * (difficultyAttributes.approachRate - 10.33);
-            } else if (difficultyAttributes.approachRate < 8) {
-                approachRateFactor += 0.05 * (8 - difficultyAttributes.approachRate);
-            }
-
-            // Buff for longer maps with high AR.
-            aimValue *= 1 + approachRateFactor * lengthBonus;
-        }
-
         // We want to give more reward for lower AR when it comes to aim and HD. This nerfs high AR and buffs lower AR.
         if (difficultyAttributes.mods.contains(GameMod.MOD_HIDDEN)) {
             aimValue *= 1 + 0.04 * (12 - difficultyAttributes.approachRate);
@@ -188,9 +164,6 @@ public class PerformanceCalculator {
     }
 
     private double calculateSpeedValue() {
-        if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            return 0;
-        }
 
         double speedValue = Math.pow(5 * Math.max(1, difficultyAttributes.speedDifficulty / 0.0675) - 4, 3) / 100000;
 
@@ -236,9 +209,6 @@ public class PerformanceCalculator {
     }
 
     private double calculateAccuracyValue() {
-        if (difficultyAttributes.mods.contains(GameMod.MOD_RELAX)) {
-            return 0;
-        }
 
         // This percentage only considers HitCircles of any value - in this part of the calculation we focus on hitting the timing hit window.
         double betterAccuracyPercentage = 0;
