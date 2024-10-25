@@ -102,7 +102,7 @@ android {
     buildTypes {
         debug {
             resValue "string", "app_name", "osu!droid-debug"
-            applicationIdSuffix '.debug'
+            applicationIdSuffix '.rxdebug'
             firebaseCrashlytics {
                 mappingFileUploadEnabled false
             }
@@ -110,6 +110,7 @@ android {
 
         release {
             resValue "string", "app_name", "osu!droid"
+            applicationIdSuffix '.rxfl'
 //            minifyEnabled true
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg', 'proguard-kotlin.pro'
             signingConfig signingConfigs.release
