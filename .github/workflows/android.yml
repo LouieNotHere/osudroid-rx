@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ csr-test ]
   pull_request:
-    branches: [ master ]
+    branches: [ csr-test ]
 
 jobs:
   build:
