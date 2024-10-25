@@ -110,7 +110,7 @@ android {
 
         release {
             resValue "string", "app_name", "osu!droid"
-            applicationIdSuffix '.rxfl'
+            applicationIdSuffix '.rxrelease'
 //            minifyEnabled true
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg', 'proguard-kotlin.pro'
             signingConfig signingConfigs.release
