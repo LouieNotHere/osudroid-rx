@@ -2,12 +2,14 @@ package com.reco1l.osu
 
 import android.util.Log
 import android.widget.TextView
+import androidx.preference.PreferenceManager
 import com.edlplan.ui.fragment.BaseFragment
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.reco1l.osu.data.BeatmapInfo
 import com.reco1l.osu.data.DatabaseManager
 import com.reco1l.toolkt.kotlin.fastForEach
 import com.rian.osu.beatmap.parser.BeatmapParser
+import com.rian.osu.difficulty.calculator.DifficultyCalculator
 import ru.nsu.ccfit.zuev.osu.GlobalManager
 import ru.nsu.ccfit.zuev.osu.LibraryManager
 import ru.nsu.ccfit.zuev.osu.ToastLogger
@@ -16,126 +18,144 @@ import ru.nsu.ccfit.zuev.osuplus.R
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
+import kotlinx.coroutines.*
 
 object DifficultyCalculationManager {
 
 
-    private var isRunning = false
+    private val mainActivity = GlobalManager.getInstance().mainActivity
+
+    private val preferences
+        get() = PreferenceManager.getDefaultSharedPreferences(mainActivity)
+
+    private var job: Job? = null
 
     private var badge: LoadingBadgeFragment? = null
 
 
     @JvmStatic
+    fun checkForOutdatedStarRatings() {
+        stopCalculation()
+
+        preferences.apply {
+            if (getLong("starRatingVersion", 0) >= DifficultyCalculator.VERSION) {
+                return
+            }
+
+            DatabaseManager.beatmapInfoTable.resetStarRatings()
+            edit().putLong("starRatingVersion", DifficultyCalculator.VERSION).apply()
+        }
+    }
+
+
+    @JvmStatic
     fun calculateDifficulties() {
-
-        if (isRunning) {
+        if (job?.isActive == true) {
             return
         }
 
-        val beatmaps = LibraryManager.getLibrary().flatMap { set -> set.beatmaps.filter { it.needsDifficultyCalculation } }
-        if (beatmaps.isEmpty()) {
+        val totalBeatmaps = LibraryManager.getLibrary().sumOf { it.beatmaps.size }
+
+        val pendingBeatmaps = LibraryManager.getLibrary().flatMap { set -> set.beatmaps.filter { it.needsDifficultyCalculation } }
+        if (pendingBeatmaps.isEmpty()) {
             return
         }
 
-        isRunning = true
         mainThread {
             badge = LoadingBadgeFragment().apply {
-                text = "Calculating beatmap difficulties... (0%)"
+                text = "Calculating beatmap difficulties..."
                 isIndeterminate = true
                 show()
             }
         }
 
-        object : Thread() {
+        job = async {
+            val threadCount = Runtime.getRuntime().availableProcessors()
+            val threadPool = Executors.newFixedThreadPool(threadCount)
 
-            override fun run() {
+            var calculated = totalBeatmaps - pendingBeatmaps.size
 
-                val threadCount = Runtime.getRuntime().availableProcessors()
-                val threadPool = Executors.newFixedThreadPool(threadCount)
+            pendingBeatmaps.chunked(max(pendingBeatmaps.size / threadCount, 1)).fastForEach { chunk ->
+                ensureActive()
 
-                var calculated = 0
+                threadPool.submit {
 
-                beatmaps.chunked(max(beatmaps.size / threadCount, 1)).fastForEach { chunk ->
+                    // .indices to avoid creating an iterator.
+                    for (i in chunk.indices) {
+                        ensureActive()
 
-                    threadPool.submit {
+                        val beatmapInfo = chunk[i]
 
-                        // .indices to avoid creating an iterator.
-                        for(i in chunk.indices) {
+                        try {
+                            val msStartTime = System.currentTimeMillis()
 
-                            if (!isRunning) {
-                                break
+                            BeatmapParser(beatmapInfo.path, this).use { parser ->
+
+                                val data = parser.parse(true)!!
+                                val newInfo = BeatmapInfo(data, beatmapInfo.dateImported, true, this)
+                                beatmapInfo.apply(newInfo)
+                                DatabaseManager.beatmapInfoTable.update(newInfo)
                             }
 
-                            val beatmapInfo = chunk[i]
-
-                            try {
-                                val msStartTime = System.currentTimeMillis()
-
-                                BeatmapParser(beatmapInfo.path).use { parser ->
-
-                                    val data = parser.parse(true)!!
-                                    val newInfo = BeatmapInfo(data, beatmapInfo.dateImported, true)
-                                    beatmapInfo.apply(newInfo)
-
-                                    DatabaseManager.beatmapInfoTable.update(newInfo)
-                                }
-
-                                if (BuildConfig.DEBUG) {
-                                    Log.i("DifficultyCalculation", "Calculated difficulty for ${beatmapInfo.path}, took ${System.currentTimeMillis() - msStartTime}ms.")
-                                }
-
-                                calculated++
-                                mainThread {
-                                    badge?.apply {
-                                        isIndeterminate = false
-                                        progress = calculated * 100 / beatmaps.size
-                                        text = "Calculating beatmap difficulties... (${progress}%)"
-                                    }
-                                }
-
-                            } catch (e: Exception) {
-                                Log.e("DifficultyCalculation", "Error while calculating difficulty.", e)
+                            if (BuildConfig.DEBUG) {
+                                Log.i("DifficultyCalculation", "Calculated difficulty for ${beatmapInfo.path}, took ${System.currentTimeMillis() - msStartTime}ms.")
                             }
 
+                            calculated++
+                            mainThread {
+                                badge?.apply {
+                                    isIndeterminate = false
+                                    progress = calculated * 100 / totalBeatmaps
+                                    text = "Calculating beatmap difficulties... (${progress}%)"
+                                }
+                            }
+
+                        } catch (e: Exception) {
+                            if (e is CancellationException) {
+                                throw e
+                            }
+
+                            Log.e("DifficultyCalculation", "Error while calculating difficulty.", e)
                         }
+
                     }
                 }
-
-                threadPool.shutdown()
-                try {
-
-                    val isTimeout = threadPool.awaitTermination(1, TimeUnit.HOURS)
-
-                    if (isRunning) {
-                        if (isTimeout) {
-                            ToastLogger.showText("Background difficulty calculation has finished.", true)
-                        } else {
-                            ToastLogger.showText("Something went wrong during background difficulty calculation.", true)
-                        }
-                    } else {
-                        ToastLogger.showText("Difficulty calculation has been paused.", false)
-                    }
-
-                    mainThread {
-                        badge?.dismiss()
-                        badge = null
-                    }
-                    GlobalManager.getInstance().songMenu?.onDifficultyCalculationEnd()
-
-                } catch (e: InterruptedException) {
-                    Log.e("DifficultyCalculation", "Failed while waiting for executor termination.", e)
-                }
-
-                isRunning = false
             }
 
-        }.start()
+            threadPool.shutdown()
+            try {
+
+                val isTimeout = threadPool.awaitTermination(1, TimeUnit.HOURS)
+
+                if (isActive) {
+                    if (isTimeout) {
+                        ToastLogger.showText("Background difficulty calculation has finished.", true)
+                    } else {
+                        ToastLogger.showText("Something went wrong during background difficulty calculation.", true)
+                    }
+                } else {
+                    ToastLogger.showText("Difficulty calculation has been paused.", false)
+                }
+
+                mainThread {
+                    badge?.dismiss()
+                    badge = null
+                }
+                GlobalManager.getInstance().songMenu?.onDifficultyCalculationEnd()
+
+            } catch (e: InterruptedException) {
+                Log.e("DifficultyCalculation", "Failed while waiting for executor termination.", e)
+            }
+
+            job = null
+        }
     }
 
 
     @JvmStatic
     fun stopCalculation() {
-        isRunning = false
+        job?.cancel()
+        job = null
     }
 
 }

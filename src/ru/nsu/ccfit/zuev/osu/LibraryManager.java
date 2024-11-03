@@ -7,13 +7,12 @@ import android.util.Log;
 import com.reco1l.osu.DifficultyCalculationManager;
 import com.reco1l.osu.data.BeatmapSetInfo;
 import com.reco1l.osu.data.DatabaseManager;
-import com.reco1l.osu.graphics.VideoTexture;
+import com.reco1l.andengine.texture.VideoTexture;
 import com.rian.osu.beatmap.parser.BeatmapParser;
 import kotlin.io.FilesKt;
 import org.jetbrains.annotations.Nullable;
 import ru.nsu.ccfit.zuev.osu.helper.FileUtils;
 import ru.nsu.ccfit.zuev.osu.helper.StringTable;
-import ru.nsu.ccfit.zuev.osuplus.R;
 
 import java.io.*;
 import java.util.*;
@@ -50,7 +49,7 @@ public class LibraryManager {
         if (!directory.exists()) {
 
             if (!directory.mkdir()) {
-                ToastLogger.showText(StringTable.format(R.string.message_error_createdir, directory.getPath()), true);
+                ToastLogger.showText(StringTable.format(com.osudroid.resources.R.string.message_error_createdir, directory.getPath()), true);
                 return false;
             }
 
@@ -154,9 +153,9 @@ public class LibraryManager {
 
                 var beatmapInfo = BeatmapInfo(data, directory.lastModified(), false);
 
-                if (data.events.videoFilename != null && Config.isDeleteUnsupportedVideos()) {
+                if (data.getEvents().videoFilename != null && Config.isDeleteUnsupportedVideos()) {
                     try {
-                        var videoFile = new File(beatmapInfo.getSetDirectory(), data.events.videoFilename);
+                        var videoFile = new File(beatmapInfo.getSetDirectory(), data.getEvents().videoFilename);
 
                         if (!VideoTexture.Companion.isSupportedVideo(videoFile)) {
                             //noinspection ResultOfMethodCallIgnored

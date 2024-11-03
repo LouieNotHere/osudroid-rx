@@ -30,7 +30,6 @@ import java.util.Date;
 
 import ru.nsu.ccfit.zuev.audio.serviceAudio.SaveServiceObject;
 import ru.nsu.ccfit.zuev.osu.helper.StringTable;
-import ru.nsu.ccfit.zuev.osuplus.R;
 
 /**
  * 应用程序异常类：用于捕获异常和提示错误信息
@@ -148,38 +147,6 @@ public class AppException extends Exception implements Thread.UncaughtExceptionH
     }
 
     /**
-     * 提示友好的错误信息
-     *
-     * @param ctx
-     */
-    public void makeToast(Context ctx) {
-        switch (this.getType()) {
-            case TYPE_HTTP_CODE:
-                String err = ctx.getString(R.string.http_status_code_error, this.getCode());
-                Toast.makeText(ctx, err, Toast.LENGTH_SHORT).show();
-                break;
-            case TYPE_HTTP_ERROR:
-                Toast.makeText(ctx, R.string.http_exception_error, Toast.LENGTH_SHORT).show();
-                break;
-            case TYPE_SOCKET:
-                Toast.makeText(ctx, R.string.socket_exception_error, Toast.LENGTH_SHORT).show();
-                break;
-            case TYPE_NETWORK:
-                Toast.makeText(ctx, R.string.network_not_connected, Toast.LENGTH_SHORT).show();
-                break;
-            case TYPE_XML:
-                Toast.makeText(ctx, R.string.xml_parser_failed, Toast.LENGTH_SHORT).show();
-                break;
-            case TYPE_IO:
-                Toast.makeText(ctx, R.string.io_exception_error, Toast.LENGTH_SHORT).show();
-                break;
-            case TYPE_RUN:
-                Toast.makeText(ctx, R.string.app_run_code_error, Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    /**
      * 保存异常日志
      *
      * @param excp
@@ -289,7 +256,7 @@ public class AppException extends Exception implements Thread.UncaughtExceptionH
         new Thread() {
             public void run() {
                 Looper.prepare();
-                Toast.makeText(context, StringTable.get(R.string.crash), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, StringTable.get(com.osudroid.resources.R.string.crash), Toast.LENGTH_SHORT).show();
                 Looper.loop();
             }
 

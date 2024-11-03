@@ -14,7 +14,7 @@ import androidx.room.Update
 data class BlockArea(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0,
 
     var x: Float = 0f,
 
@@ -40,11 +40,11 @@ data class BlockArea(
 interface IBlockAreaDAO {
 
     // Sorting because this will affect the attachment order, newer areas will be on top.
-    @Query("SELECT * FROM BlockArea ORDER BY id ASC")
+    @Query("SELECT * FROM BlockArea")
     fun getAll(): List<BlockArea>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(blockArea: BlockArea)
+    fun insert(blockArea: BlockArea): Long
 
     @Update
     fun update(blockArea: BlockArea)

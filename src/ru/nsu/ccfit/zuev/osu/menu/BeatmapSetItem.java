@@ -20,7 +20,6 @@ import com.reco1l.osu.data.DatabaseManager;
 import ru.nsu.ccfit.zuev.osu.Utils;
 import ru.nsu.ccfit.zuev.osu.DifficultyAlgorithm;
 import ru.nsu.ccfit.zuev.osu.helper.StringTable;
-import ru.nsu.ccfit.zuev.osuplus.R;
 
 public class BeatmapSetItem {
     private final BeatmapItem[] beatmapItems;
@@ -44,7 +43,7 @@ public class BeatmapSetItem {
     public BeatmapSetItem(final MenuItemListener listener, final BeatmapSetInfo beatmapSetInfo) {
         this.listener = new WeakReference<>(listener);
         this.beatmapSetInfo = beatmapSetInfo;
-        beatmapSetDir = beatmapSetInfo.getPath();
+        beatmapSetDir = beatmapSetInfo.getDirectory();
         bgHeight = ResourceManager.getInstance()
                 .getTexture("menu-button-background").getHeight()
                 - Utils.toRes(25);
@@ -54,7 +53,7 @@ public class BeatmapSetItem {
 
         titleStr = beatmapInfo.getArtistText() + " - " + beatmapInfo.getTitleText();
 
-        creatorStr = StringTable.format(R.string.menu_creator,
+        creatorStr = StringTable.format(com.osudroid.resources.R.string.menu_creator,
                 beatmapInfo.getCreator());
         beatmapItems = new BeatmapItem[beatmapSetInfo.getCount()];
 
@@ -66,7 +65,7 @@ public class BeatmapSetItem {
     public BeatmapSetItem(final MenuItemListener listener, final BeatmapSetInfo beatmapSetInfo, int id) {
         this.listener = new WeakReference<>(listener);
         this.beatmapSetInfo = beatmapSetInfo;
-        beatmapSetDir = this.beatmapSetInfo.getPath();
+        beatmapSetDir = this.beatmapSetInfo.getDirectory();
         bgHeight = ResourceManager.getInstance()
                 .getTexture("menu-button-background").getHeight()
                 - Utils.toRes(25);
@@ -76,7 +75,7 @@ public class BeatmapSetItem {
 
         titleStr = beatmapInfo.getArtistText() + " - " + beatmapInfo.getTitleText();
 
-        creatorStr = StringTable.format(R.string.menu_creator, beatmapInfo.getCreator());
+        creatorStr = StringTable.format(com.osudroid.resources.R.string.menu_creator, beatmapInfo.getCreator());
         beatmapItems = new BeatmapItem[1];
         beatmapId = id;
 
@@ -161,7 +160,7 @@ public class BeatmapSetItem {
         }
     }
 
-    public void select(boolean reloadMusic, boolean reloadBG) {
+    public void select() {
         if (!listener.get().isSelectAllowed() || scene == null) {
             return;
         }
@@ -172,14 +171,7 @@ public class BeatmapSetItem {
         initBeatmaps();
         percentAppeared = 0;
 
-        var beatmapInfo = beatmapSetInfo.getBeatmaps().get(0);
-
-        final String musicFileName = beatmapInfo.getAudioPath();
-        if (reloadMusic) {
-            listener.get().playMusic(musicFileName, beatmapInfo.getPreviewTime());
-        }
-
-        selectBeatmap(beatmapItems[0], reloadBG);
+        selectBeatmap(beatmapItems[0], true);
         beatmapItems[0].setSelectedColor();
     }
 
@@ -210,7 +202,7 @@ public class BeatmapSetItem {
 
     public void applyFilter(final String filter, final boolean favs, List<String> limit) {
         if ((favs && !isFavorite())
-                || (limit != null && !limit.contains(beatmapSetDir))) {
+                || (limit != null && !limit.isEmpty() && !limit.contains(beatmapSetDir))) {
             //System.out.println(trackDir);
             if (selected) {
                 deselect();

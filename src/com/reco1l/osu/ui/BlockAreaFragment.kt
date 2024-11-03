@@ -28,6 +28,8 @@ class BlockAreaFragment : BaseFragment() {
 
     private val blockAreaItems = mutableListOf<BlockAreaItem>()
 
+    private lateinit var resetButton: View
+
 
     private var isEditing = true
 
@@ -52,7 +54,7 @@ class BlockAreaFragment : BaseFragment() {
 
         findViewById<View>(R.id.drag)!!.setOnTouchListener { _, event ->
 
-            when(event.action) {
+            when (event.action) {
 
                 ACTION_DOWN -> {
                     toolbarMoveVector.x = event.x
@@ -83,16 +85,29 @@ class BlockAreaFragment : BaseFragment() {
                 width = 128f.dp,
                 height = 128f.dp
             )
+            blockArea.id = DatabaseManager.blockAreaTable.insert(blockArea)
             blockAreaItems.add(BlockAreaItem(blockArea, true))
-            DatabaseManager.blockAreaTable.insert(blockArea)
+            resetButton.isEnabled = true
         }
 
-        findViewById<View>(R.id.reset)!!.setOnClickListener {
-            DatabaseManager.blockAreaTable.deleteAll()
+        resetButton = findViewById<View>(R.id.reset)!!
+        resetButton.isEnabled = blockAreaItems.isNotEmpty()
+        resetButton.setOnClickListener {
+            MessageDialog()
+                .setTitle("Reset Block Areas")
+                .setMessage("Are you sure you want to reset all block areas?")
+                .addButton("Yes") { dialog ->
+                    DatabaseManager.blockAreaTable.deleteAll()
 
-            blockAreaItems.forEach {
-                it.itemView.removeSelf()
-            }
+                    blockAreaItems.forEach {
+                        it.itemView.removeSelf()
+                    }
+
+                    resetButton.isEnabled = false
+                    dialog.dismiss()
+                }
+                .addButton("No") { dialog -> dialog.dismiss() }
+                .show()
         }
 
     }
@@ -134,15 +149,12 @@ class BlockAreaFragment : BaseFragment() {
                 val moveVector = Vector2(0f, 0f)
                 val resizeVector = Vector2(0f, 0f)
 
-                // The margin between the block and the actual view bound, because the Remove and Resize
-                // buttons are slightly outside of the block we have to account for that when setting limits.
-                val blockMargin = 8f.dp
-
                 move.setOnTouchListener { _, event ->
 
                     when(event.action) {
 
                         ACTION_DOWN -> {
+                            itemView.bringToFront()
                             moveVector.x = event.x
                             moveVector.y = event.y
                             true
@@ -153,8 +165,8 @@ class BlockAreaFragment : BaseFragment() {
                             val deltaX = event.x - moveVector.x
                             val deltaY = event.y - moveVector.y
 
-                            itemView.x = (itemView.x + deltaX).coerceIn(-blockMargin, root!!.width - block.width - blockMargin)
-                            itemView.y = (itemView.y + deltaY).coerceIn(-blockMargin, root!!.height - block.height - blockMargin)
+                            itemView.x = (itemView.x + deltaX).coerceIn(0f, (root!!.width - block.width).toFloat())
+                            itemView.y = (itemView.y + deltaY).coerceIn(0f, (root!!.height - block.height).toFloat())
 
                             data.x = itemView.x
                             data.y = itemView.y
@@ -173,6 +185,8 @@ class BlockAreaFragment : BaseFragment() {
                 remove.setOnClickListener {
                     itemView.removeSelf()
                     DatabaseManager.blockAreaTable.delete(data)
+                    blockAreaItems.remove(this)
+                    resetButton.isEnabled = blockAreaItems.isNotEmpty()
                 }
 
                 resize.setOnTouchListener { _, event ->
@@ -180,6 +194,7 @@ class BlockAreaFragment : BaseFragment() {
                     when(event.action) {
 
                         ACTION_DOWN -> {
+                            itemView.bringToFront()
                             resizeVector.x = event.x
                             resizeVector.y = event.y
                             true

@@ -18,11 +18,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.reco1l.osu.multiplayer.Multiplayer;
+import com.reco1l.osu.playfield.ProgressIndicatorType;
+
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 import org.anddev.andengine.util.Debug;
 
 import ru.nsu.ccfit.zuev.osu.helper.FileUtils;
+import ru.nsu.ccfit.zuev.osu.scoring.BeatmapLeaderboardScoringMode;
 
 public class Config {
     private static String corePath,
@@ -79,13 +82,16 @@ public class Config {
         deleteUnsupportedVideos,
         submitScoreOnMultiplayer,
         keepBackgroundAspectRatio,
-        noChangeDimInBreaks;
+        noChangeDimInBreaks,
+        dimHitObjects,
+        forceMaxRefreshRate;
 
     private static int RES_WIDTH,
         RES_HEIGHT,
         errorMeter,
         spinnerStyle,
-        metronomeSwitch;
+        metronomeSwitch,
+        progressIndicatorType;
     
     private static float soundVolume,
         bgmVolume,
@@ -96,6 +102,8 @@ public class Config {
         cursorSize;
 
     private static DifficultyAlgorithm difficultyAlgorithm;
+
+    private static BeatmapLeaderboardScoringMode beatmapLeaderboardScoringMode;
 
     private static Map<String, String> skins;
 
@@ -123,6 +131,9 @@ public class Config {
         videoEnabled = prefs.getBoolean("enableVideo", false);
         keepBackgroundAspectRatio = prefs.getBoolean("keepBackgroundAspectRatio", false);
         noChangeDimInBreaks = prefs.getBoolean("noChangeDimInBreaks", false);
+        dimHitObjects = prefs.getBoolean("dimHitObjects", true);
+        forceMaxRefreshRate = prefs.getBoolean("forceMaxRefreshRate", false);
+        progressIndicatorType = Integer.parseInt(prefs.getString("progressIndicatorType", "0"));
 
         setSize();
         setPlayfieldSize(prefs.getInt("playfieldSize", 100) / 100f);
@@ -251,6 +262,7 @@ public class Config {
         onlinePassword = prefs.getString("onlinePassword", null);
         stayOnline = prefs.getBoolean("stayOnline", false);
         loadAvatar = prefs.getBoolean("loadAvatar",false);
+        beatmapLeaderboardScoringMode = BeatmapLeaderboardScoringMode.parse(Integer.parseInt(prefs.getString("beatmapLeaderboardScoringMode", "0")));
     }
 
     public static void setSize() {
@@ -518,6 +530,10 @@ public class Config {
 
     public static void setStayOnline(boolean stayOnline) {
         Config.stayOnline = stayOnline;
+    }
+
+    public static BeatmapLeaderboardScoringMode getBeatmapLeaderboardScoringMode() {
+        return beatmapLeaderboardScoringMode;
     }
 
     public static boolean getLoadAvatar() {
@@ -788,5 +804,18 @@ public class Config {
 
     public static boolean isNoChangeDimInBreaks() {
         return noChangeDimInBreaks;
+    }
+
+    public static boolean isDimHitObjects() {
+        return dimHitObjects;
+    }
+
+    public static boolean isForceMaxRefreshRate() {
+        return forceMaxRefreshRate;
+    }
+
+    @ProgressIndicatorType
+    public static int getProgressIndicatorType() {
+        return progressIndicatorType;
     }
 }
