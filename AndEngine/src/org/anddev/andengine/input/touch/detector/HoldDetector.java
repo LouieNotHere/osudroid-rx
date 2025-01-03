@@ -26,7 +26,7 @@ public class HoldDetector extends BaseDetector implements IUpdateHandler {
 	private static final long TRIGGER_HOLD_MINIMUM_MILLISECONDS_DEFAULT = 200;
 	private static final float TRIGGER_HOLD_MAXIMUM_DISTANCE_DEFAULT = 10;
 
-	private static final float TIME_BETWEEN_UPDATES_DEFAULT = 0.1f;
+	private static final float TIME_BETWEEN_UPDATES_DEFAULT = 0.016f;
 
 	// ===========================================================
 	// Fields
